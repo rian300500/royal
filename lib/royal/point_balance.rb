@@ -13,7 +13,7 @@ module Royal
     validates :reason, length: { maximum: 1000 }
 
     before_create do
-      previous_balance = PointBalance.where(owner: owner).order(:sequence).last
+      previous_balance = self.class.latest_balance_for_owner(owner)
 
       self.sequence = (previous_balance&.sequence || 0) + 1
       self.balance  = (previous_balance&.balance  || 0) + amount
@@ -22,12 +22,18 @@ module Royal
     after_create if: -> { balance.negative? } do
       # Rollback the transaction _after_ the operation to ensure amount
       # was applied against the most recent points balance.
-      raise InsufficientPointsError.new(amount, original_balance, reason)
+      raise InsufficientPointsError.new(amount, original_balance, reason, pointable)
     end
 
     # @return [String]
     def self.sequence_unique_index_name
       'index_point_balances_on_owner_id_and_owner_type_and_sequence'
+    end
+
+    # @param owner [ActiveRecord::Base]
+    # @return [PointBalance, nil]
+    def self.latest_balance_for_owner(owner)
+      PointBalance.where(owner: owner).order(:sequence).last
     end
 
     # @param amount [Integer]
@@ -43,6 +49,9 @@ module Royal
 
         retry if (retries += 1) < MAX_RETRIES
 
+        # NOTE: Failed to insert record after maximum number of attempts.
+        # This could be caused by too much write contention on the table.
+        # One possible solution is to partition the table to split up writes.
         raise Royal::SequenceError, "Failed to update points: #{error.message}"
       end
     end
@@ -52,6 +61,11 @@ module Royal
     # @return [Integer]
     def original_balance
       balance - amount
+    end
+
+    # @return [Boolean]
+    def readonly?
+      super || persisted?
     end
   end
 end
