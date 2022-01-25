@@ -22,7 +22,70 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+class User < ApplicationRecord
+  include Royal::Points
+
+  # ...
+end
+```
+
+### Viewing the Point Balance
+
+```ruby
+user = User.first
+
+user.loyalty_points # => 0
+```
+
+### Adding Loyalty Points
+
+```ruby
+user.add_loyalty_points(100) # => 100
+```
+
+### Spending Loyalty Points
+
+```ruby
+user.spend_loyalty_points(75) # => 25
+```
+
+```ruby
+user.spend_loyalty_points(200) # => raises #<Royal::InsufficientPointsError ...>
+```
+
+### Including a Reason or Note
+
+```ruby
+user.add_loyalty_points(50, reason: 'Birthday points!')
+```
+
+### Linking to Another Record
+
+```ruby
+reward = Reward.find_by(name: 'Gift Card')
+
+user.spend_loyalty_points(50, pointable: reward)
+```
+
+### Loyalty Point Balance History
+
+```erb
+<table>
+  <tr>
+    <th>Operation</th>
+    <th>Balance</th>
+    <th>Reason</th>
+  </tr>
+  <% user.loyalty_point_balances.each do |point_balance| %>
+    <tr>
+      <td><%= point_balance.amount.positive? ? 'Added' : 'Spent' %> <%= point_balance.amount %></td>
+      <td><%= point_balance.balance %></td>
+      <td><%= point_balance.reason %></td>
+    </tr>
+  <% end %>
+</table>
+```
 
 ## Development
 
