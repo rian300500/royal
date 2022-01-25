@@ -16,6 +16,14 @@ Layout/AccessModifierIndentation:
 Layout/LineLength:
   Max: 120
 
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - spec/**/*.rb
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*.rb
+
 Naming/RescuedExceptionsVariableName:
   PreferredName: error
 
@@ -23,8 +31,18 @@ Rails/ApplicationRecord:
   Exclude:
     - lib/**/*
 
+RSpec/ExpectChange:
+  EnforcedStyle: block
+
+RSpec/HookArgument:
+  EnforcedStyle: each
+
 Style/Documentation:
   Enabled: false
+
+Style/RescueModifier:
+  Exclude:
+    - spec/**/*.rb
 
 Style/StringLiterals:
   Enabled: true

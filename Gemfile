@@ -8,6 +8,7 @@ gemspec
 gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.0'
 gem 'rubocop', '~> 1.25'
-gem 'rubocop-performance'
+gem 'rubocop-performance', '~> 1.12'
 gem 'rubocop-rails', '~> 2.13'
 gem 'rubocop-rspec', '~> 2.8'
+gem 'sqlite3', '~> 1.4'

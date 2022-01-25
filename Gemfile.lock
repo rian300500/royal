@@ -66,6 +66,7 @@ GEM
     rubocop-rspec (2.8.0)
       rubocop (~> 1.19)
     ruby-progressbar (1.11.0)
+    sqlite3 (1.4.2)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.1.0)
@@ -79,9 +80,10 @@ DEPENDENCIES
   royal!
   rspec (~> 3.0)
   rubocop (~> 1.25)
-  rubocop-performance
+  rubocop-performance (~> 1.12)
   rubocop-rails (~> 2.13)
   rubocop-rspec (~> 2.8)
+  sqlite3 (~> 1.4)
 
 BUNDLED WITH
    2.2.17
