@@ -28,8 +28,7 @@ Naming/RescuedExceptionsVariableName:
   PreferredName: error
 
 Rails/ApplicationRecord:
-  Exclude:
-    - lib/**/*
+  Enabled: false
 
 RSpec/ExpectChange:
   EnforcedStyle: block
