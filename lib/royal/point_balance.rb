@@ -50,8 +50,9 @@ module Royal
         retry if (retries += 1) < MAX_RETRIES
 
         # NOTE: Failed to insert record after maximum number of attempts.
-        # This could be caused by too much write contention on the table.
-        # One possible solution is to partition the table to split up writes.
+        # This could be caused by too much write contention for the same owner.
+        # One possible solution is to acquire a row-level lock on the owner record and retry.
+        # Other solutions like advisory locks or sequential processing queues may work better in some situations.
         raise Royal::SequenceError, "Failed to update points: #{error.message}"
       end
     end
