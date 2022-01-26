@@ -38,8 +38,8 @@ RSpec.describe Royal::Points do
     end
   end
 
-  describe '#spend_loyalty_points' do
-    subject(:spend_loyalty_points) { user.spend_loyalty_points(amount, reason: reason, pointable: pointable) }
+  describe '#subtract_loyalty_points' do
+    subject(:subtract_loyalty_points) { user.subtract_loyalty_points(amount, reason: reason, pointable: pointable) }
 
     let(:amount) { 100 }
     let(:reason) { 'Example reason' }
@@ -50,32 +50,32 @@ RSpec.describe Royal::Points do
     end
 
     it 'spends points from the user' do
-      expect { spend_loyalty_points }.to change { user.loyalty_points }.by(-amount)
+      expect { subtract_loyalty_points }.to change { user.loyalty_points }.by(-amount)
     end
 
     it 'returns the new points balance' do
-      expect(spend_loyalty_points).to eq(250 - amount)
+      expect(subtract_loyalty_points).to eq(250 - amount)
     end
 
     it 'creates a new point balance' do
-      expect { spend_loyalty_points }.to change { user.loyalty_point_balances.count }.by(1)
+      expect { subtract_loyalty_points }.to change { user.loyalty_point_balances.count }.by(1)
     end
 
     context 'when the user has insufficient points' do
       before(:each) do
-        user.spend_loyalty_points(200)
+        user.subtract_loyalty_points(200)
       end
 
       it 'raises an InsufficientPointsError' do
-        expect { spend_loyalty_points }.to raise_error(Royal::InsufficientPointsError)
+        expect { subtract_loyalty_points }.to raise_error(Royal::InsufficientPointsError)
       end
 
       it "does not change the user's points balance" do
-        expect { spend_loyalty_points rescue nil }.not_to change { user.loyalty_points }
+        expect { subtract_loyalty_points rescue nil }.not_to change { user.loyalty_points }
       end
 
       it 'does not create a new point balance' do
-        expect { spend_loyalty_points rescue nil }.not_to change { user.loyalty_point_balances.count }
+        expect { subtract_loyalty_points rescue nil }.not_to change { user.loyalty_point_balances.count }
       end
     end
   end

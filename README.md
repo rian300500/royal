@@ -47,11 +47,11 @@ user.add_loyalty_points(100) # => 100
 ### Spending Loyalty Points
 
 ```ruby
-user.spend_loyalty_points(75) # => 25
+user.subtract_loyalty_points(75) # => 25
 ```
 
 ```ruby
-user.spend_loyalty_points(200) # => raises #<Royal::InsufficientPointsError ...>
+user.subtract_loyalty_points(200) # => raises #<Royal::InsufficientPointsError ...>
 ```
 
 ### Including a Reason or Note
@@ -65,7 +65,7 @@ user.add_loyalty_points(50, reason: 'Birthday points!')
 ```ruby
 reward = Reward.find_by(name: 'Gift Card')
 
-user.spend_loyalty_points(50, pointable: reward)
+user.subtract_loyalty_points(50, pointable: reward)
 ```
 
 ### Loyalty Point Balance History

@@ -28,7 +28,7 @@ module Royal
     # @param reason [String, nil]
     # @param pointable [ActiveRecord::Base, nil]
     # @return [Integer] Returns the new points balance.
-    def spend_loyalty_points(amount, reason: nil, pointable: nil)
+    def subtract_loyalty_points(amount, reason: nil, pointable: nil)
       loyalty_point_balances.apply_change_to_points(-amount, reason: reason, pointable: pointable)
     end
   end
