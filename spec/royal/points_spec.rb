@@ -9,7 +9,7 @@ RSpec.describe Royal::Points do
     subject(:loyalty_points) { user.loyalty_points }
 
     it "returns the user's loyalty points balance" do
-      Royal::PointBalance.apply_change_to_points(100, owner: user)
+      Royal::PointBalance.apply_change_to_points(user, 100)
       expect(loyalty_points).to eq(100)
     end
 
