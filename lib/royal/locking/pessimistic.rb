@@ -8,7 +8,7 @@ module Royal
         owner.transaction(requires_new: true) do
           # NOTE: Avoid using `lock!` to prevent reloading the record from DB.
           # We don't need any updated state, just exclusive use of the record.
-          User.where(id: owner).lock(true).take!
+          owner.class.where(id: owner).lock(true).take!
           yield
         end
       end
