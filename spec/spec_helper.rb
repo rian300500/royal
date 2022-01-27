@@ -5,6 +5,10 @@ require 'royal'
 require_relative 'support/database'
 require_relative 'support/user'
 
+Royal.configure do |config|
+  config.locking = ENV.fetch('ROYAL_LOCKING_MODE', :optimistic).to_sym
+end
+
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = '.rspec_status'
