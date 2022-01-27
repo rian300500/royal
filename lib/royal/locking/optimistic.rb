@@ -12,7 +12,7 @@ module Royal
         rescue ActiveRecord::RecordNotUnique => error
           raise error unless error.message.include?(PointBalance.sequence_unique_index_name)
 
-          retry if (retries += 1) < MAX_RETRIES
+          retry if (retries += 1) < Royal.config.max_retries
 
           # NOTE: Failed to insert record after maximum number of attempts.
           # This could be caused by too much write contention for the same owner.

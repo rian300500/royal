@@ -4,8 +4,6 @@ require 'active_record'
 
 module Royal
   class PointBalance < ActiveRecord::Base
-    MAX_RETRIES = 10
-
     belongs_to :owner, polymorphic: true, optional: false
     belongs_to :pointable, polymorphic: true, optional: true
 
