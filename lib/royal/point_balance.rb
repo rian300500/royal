@@ -23,11 +23,6 @@ module Royal
       raise InsufficientPointsError.new(amount, original_balance, reason, pointable)
     end
 
-    # @return [String]
-    def self.sequence_unique_index_name
-      'index_point_balances_on_owner_id_and_owner_type_and_sequence'
-    end
-
     # @param owner [ActiveRecord::Base]
     # @return [PointBalance, nil]
     def self.latest_balance_for_owner(owner)

@@ -56,4 +56,51 @@ RSpec.describe Royal::PointBalance do
     point_balance.save!
     expect(point_balance).to be_readonly
   end
+
+  describe '.apply_change_to_points' do
+    subject(:apply_change_to_points) { described_class.apply_change_to_points(user, amount) }
+
+    let(:user) { User.create!(username: 'Test') }
+    let(:amount) { 100 }
+
+    it 'creates a new point balance record' do
+      expect { apply_change_to_points }.to change { user.point_balances.count }.by(1)
+    end
+
+    it 'returns the correct resulting balance' do
+      previous_record = described_class.create!(owner: user, amount: 150)
+      expect(apply_change_to_points).to eq(previous_record.balance + amount)
+    end
+
+    if Royal.config.locking.is_a?(Royal::Locking::Optimistic)
+      context 'when it fails to acquire a lock fewer than the maximum number of retries' do
+        before(:each) do
+          latest_record  = described_class.create!(owner: user, amount: 100)
+          ordered_values = Array.new(Royal.config.max_retries - 1) { nil }
+
+          # Simulate conflicting writes N - 1 times before finally successfully getting the latest record.
+          allow(described_class).to receive(:latest_balance_for_owner).and_return(*ordered_values, latest_record)
+        end
+
+        it 'creates a new point balance record' do
+          expect { apply_change_to_points }.to change { user.point_balances.count }.by(1)
+        end
+      end
+
+      context 'when it fails to acquire a lock after the maximum number of retries' do
+        before(:each) do
+          described_class.create!(owner: user, amount: 100)
+          allow(described_class).to receive(:latest_balance_for_owner).and_return(nil)
+        end
+
+        it 'raises a Royal::SequenceError' do
+          expect { apply_change_to_points }.to raise_error(Royal::SequenceError)
+        end
+
+        it 'does not write any point balance records' do
+          expect { apply_change_to_points rescue nil }.not_to change { user.point_balances.count }
+        end
+      end
+    end
+  end
 end
