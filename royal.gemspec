@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Minty Fresh']
   spec.email         = ['7896757+mintyfresh@users.noreply.github.com']
 
-  spec.summary       = 'Loyalty Points for Rails'
-  spec.description   = 'Add loyalty points to your Rails models'
+  spec.summary       = 'Loyalty Points for ActiveRecord'
+  spec.description   = 'Ledger backed loyalty points for your ActiveRecord models'
   spec.homepage      = 'https://github.com/mintyfresh/royal'
 
   spec.required_ruby_version = Gem::Requirement.new('>= 2.6.0')
