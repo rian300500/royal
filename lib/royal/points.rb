@@ -13,7 +13,7 @@ module Royal
 
     # @return [Integer]
     def current_points
-      point_balances.order(:sequence).last&.balance || 0
+      point_balances.order(sequence: :desc).limit(1).pluck(:balance).first || 0
     end
 
     # @param amount [Integer]

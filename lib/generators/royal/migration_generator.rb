@@ -3,7 +3,7 @@
 require 'rails/generators'
 require 'rails/generators/active_record'
 
-module Generalis
+module Royal
   module Generators
     class MigrationGenerator < Rails::Generators::Base
       include Rails::Generators::Migration
@@ -14,7 +14,7 @@ module Generalis
         ::ActiveRecord::Generators::Base.next_migration_number(dir)
       end
 
-      def create_migration_files
+      def create_migration
         migration_template 'create_point_balances.rb.erb', 'db/migrate/create_point_balances.rb'
       end
 

@@ -20,6 +20,18 @@ Or install it yourself as:
 
     $ gem install royal
 
+### Generating Configuration
+
+    $ bin/rails g royal:install
+
+This will place a configuration file at `config/initializers/royal.rb` in your Rails application directory.
+
+### Generating Migrations
+
+    $ bin/rails g royal:migration
+
+    $ bin/rails db:migrate
+
 ## Usage
 
 ```ruby
@@ -30,7 +42,11 @@ class User < ApplicationRecord
 end
 ```
 
+Royal uses a separate ledger table to track points for your models, so it's not necessary to add any columns to existing tables.
+
 ### Viewing the Point Balance
+
+To view the current balance of a record, use the `current_points` method:
 
 ```ruby
 user = User.first
@@ -38,11 +54,15 @@ user = User.first
 user.current_points # => 0
 ```
 
+**NOTE:** The `current_points` method accesses the database each time it's called.
+
 ### Adding Loyalty Points
 
 ```ruby
 user.add_points(100) # => 100
 ```
+
+This method returns the new points balance after the operation.
 
 ### Spending Loyalty Points
 
@@ -50,17 +70,28 @@ user.add_points(100) # => 100
 user.subtract_points(75) # => 25
 ```
 
+This method returns the new points balance after the operation.
+
+If the current balance is less than the specified amount of points to subtract, a `Royal::InsufficientPointsError` is raised:
+
 ```ruby
 user.subtract_points(200) # => raises #<Royal::InsufficientPointsError ...>
 ```
 
 ### Including a Reason or Note
 
+It's possible to include a String of text when adding or subtracting points, which will be stored with the change:
+
 ```ruby
 user.add_points(50, reason: 'Birthday points!')
 ```
 
+**NOTE:** By default, the reason can be at most 1000 characters long.
+
 ### Linking to Another Record
+
+It's possible to link an additional record when adding or subtracting points.
+Below is an example using a hypothetical `Reward` model:
 
 ```ruby
 reward = Reward.find_by(name: 'Gift Card')
@@ -70,6 +101,8 @@ user.subtract_points(50, pointable: reward)
 
 ### Loyalty Point Balance History
 
+Since points are stored in a ledger, it's possible to view and display the complete history of a points balance:
+
 ```erb
 <table>
   <tr>
@@ -77,7 +110,7 @@ user.subtract_points(50, pointable: reward)
     <th>Balance</th>
     <th>Reason</th>
   </tr>
-  <% user.point_balances.each do |point_balance| %>
+  <% user.point_balances.order(:sequence).each do |point_balance| %>
     <tr>
       <td><%= point_balance.amount.positive? ? 'Added' : 'Spent' %> <%= point_balance.amount %></td>
       <td><%= point_balance.balance %></td>
@@ -86,6 +119,9 @@ user.subtract_points(50, pointable: reward)
   <% end %>
 </table>
 ```
+
+**NOTE:** For data integrity reasons, `Royal::PointBalance` records are as marked readonly once persisted to the database.
+Modifying or removing existing balance records is not supported.
 
 ## Concurrency and Locking
 
@@ -147,6 +183,12 @@ In most cases, lock-keys colliding would just result in two or more unrelated re
 Unless your applicable has a very large number of `owner` records with overlapping keys that are frequently updated together, this shouldn't create any cause for concern.
 
 However, if your application falls into situation #1 described above and also holds advisory locks for extended periods of time, balance updates may stall for much longer than expected as they'll be blocked until the lock is released.
+
+## Future Functionalty and Roadmap
+
+ * [ ] Support multiple types of points per model
+ * [ ] Add RSpec matchers to assist in testing
+ * [ ] Improve documentation and examples
 
 ## Development
 
