@@ -35,29 +35,29 @@ end
 ```ruby
 user = User.first
 
-user.loyalty_points # => 0
+user.current_points # => 0
 ```
 
 ### Adding Loyalty Points
 
 ```ruby
-user.add_loyalty_points(100) # => 100
+user.add_points(100) # => 100
 ```
 
 ### Spending Loyalty Points
 
 ```ruby
-user.subtract_loyalty_points(75) # => 25
+user.subtract_points(75) # => 25
 ```
 
 ```ruby
-user.subtract_loyalty_points(200) # => raises #<Royal::InsufficientPointsError ...>
+user.subtract_points(200) # => raises #<Royal::InsufficientPointsError ...>
 ```
 
 ### Including a Reason or Note
 
 ```ruby
-user.add_loyalty_points(50, reason: 'Birthday points!')
+user.add_points(50, reason: 'Birthday points!')
 ```
 
 ### Linking to Another Record
@@ -65,7 +65,7 @@ user.add_loyalty_points(50, reason: 'Birthday points!')
 ```ruby
 reward = Reward.find_by(name: 'Gift Card')
 
-user.subtract_loyalty_points(50, pointable: reward)
+user.subtract_points(50, pointable: reward)
 ```
 
 ### Loyalty Point Balance History
@@ -77,7 +77,7 @@ user.subtract_loyalty_points(50, pointable: reward)
     <th>Balance</th>
     <th>Reason</th>
   </tr>
-  <% user.loyalty_point_balances.each do |point_balance| %>
+  <% user.point_balances.each do |point_balance| %>
     <tr>
       <td><%= point_balance.amount.positive? ? 'Added' : 'Spent' %> <%= point_balance.amount %></td>
       <td><%= point_balance.balance %></td>
