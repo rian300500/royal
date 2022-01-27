@@ -1,7 +1,7 @@
 # Royal
 
 Royal adds loyalty (and other types of) points to your ActiveRecord models.
-It's uses an internal ledger for balance tracking, provides a simple programmer interface, and is designed to handle concurrency and locking for you.
+It's backed by an internal ledger for balance tracking, provides a simple programmer interface, and is designed to handle concurrency and locking for you.
 
 ## Installation
 
