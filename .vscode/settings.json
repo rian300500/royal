@@ -2,5 +2,11 @@
     "[ruby]": {
         "editor.tabSize": 2
     },
-    "ruby.rubocop.useBundler": true
+    "ruby.rubocop.useBundler": true,
+    "cSpell.words": [
+        "hashtext",
+        "pointable",
+        "rubygems",
+        "xact"
+    ]
 }

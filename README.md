@@ -158,7 +158,7 @@ However, if your application needs to perform frequent, parallel balance updates
 (For example, an organization that receives points from all of its employees, or some other group that receives points from all of its members.)
 
 **NOTE:** You shouldn't usually need to change locking strategies unless you see frequent `SequenceError`s or otherwise experience poor performance.
-Even in cases where your application does perform a large number of parallel balance updates for the same record, you may see better results changing how your application applies these updates. (e.g. Using a queue to asynchronously apply updatesin sequence from a sepearate task instead of in parallel.)
+Even in cases where your application does perform a large number of parallel balance updates for the same record, you may see better results changing how your application applies these updates. (e.g. Using a queue to asynchronously apply updates in sequence from a separate task instead of in parallel.)
 
 ### Pessimistic Locking
 
@@ -173,14 +173,14 @@ This locking mode uses an exclusive advisory lock on a key that's unique to each
 See more here: https://www.postgresql.org/docs/current/functions-admin.html#FUNCTIONS-ADVISORY-LOCKS
 
 Using advisory locking provides similar advantages to pessimistic locking without having to acquire a row-level lock on the owner record.
-Locking is done using the 2-argument version of `pg_advisory_xact_lock` using values computed based from ther `owner` record's ID and polymorphic name.
+Locking is done using the 2-argument version of `pg_advisory_xact_lock` using values computed based from their `owner` record's ID and polymorphic name.
 
 e.g. A lock for a `User` record with ID 1 would acquire a lock as so:
 ```sql
 SELECT pg_advisory_xact_lock(hashtext('User'), 1)
 ```
 
-When using advisory locks, there are situations where lock-keys could potentially experience collissions.
+When using advisory locks, there are situations where lock-keys could potentially experience collisions.
 Since advisory lock keys are 64-bits wide, it is unlikely to happen for most applications, but is still worth considering.
 
 Two possible situations where these keys would collide are:
@@ -192,7 +192,7 @@ Unless your applicable has a very large number of `owner` records with overlappi
 
 However, if your application falls into situation #1 described above and also holds advisory locks for extended periods of time, balance updates may stall for much longer than expected as they'll be blocked until the lock is released.
 
-## Future Functionalty and Roadmap
+## Future Functionality and Wishlist
 
  * [ ] Support multiple types of points per model
  * [ ] Add RSpec matchers to assist in testing
