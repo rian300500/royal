@@ -1,8 +1,7 @@
 # Royal
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/royal`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Royal adds loyalty (and other types of) points to your ActiveRecord models.
+It's uses an internal ledger for balance tracking, provides a simple programmer interface, and is designed to handle concurrency and locking for you.
 
 ## Installation
 
@@ -22,17 +21,26 @@ Or install it yourself as:
 
 ### Generating Configuration
 
+Generate the configuration file with:
+
     $ bin/rails g royal:install
 
 This will place a configuration file at `config/initializers/royal.rb` in your Rails application directory.
 
 ### Generating Migrations
 
+Generate the migration file with:
+
     $ bin/rails g royal:migration
+
+And then run the migration:
 
     $ bin/rails db:migrate
 
 ## Usage
+
+To add a points balance to any of your ActiveRecord models, include the `Royal::Points` module.
+For the purposes of the examples below, we'll be using a hypothetical `User` model:
 
 ```ruby
 class User < ApplicationRecord
