@@ -26,8 +26,8 @@ module Royal
     # @param max_retries [Integer]
     # @return [void]
     def max_retries=(max_retries)
-      raise ArgumentError, "Max retries must be an Integer" unless max_retries.is_a?(Integer)
-      raise ArgumentError, "Max retries must be positive" unless max_retries.positive?
+      raise ArgumentError, 'Max retries must be an Integer' unless max_retries.is_a?(Integer)
+      raise ArgumentError, 'Max retries must be positive' unless max_retries.positive?
 
       @max_retries = max_retries
     end

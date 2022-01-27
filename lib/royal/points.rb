@@ -8,7 +8,7 @@ module Royal
 
     included do
       has_many :point_balances, as: :owner, inverse_of: :owner,
-                                        class_name: 'Royal::PointBalance', dependent: :delete_all
+                                class_name: 'Royal::PointBalance', dependent: :delete_all
     end
 
     # Returns the current number of points in the record's balance.
