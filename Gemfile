@@ -11,4 +11,6 @@ gem 'rubocop', '~> 1.25'
 gem 'rubocop-performance', '~> 1.12'
 gem 'rubocop-rails', '~> 2.13'
 gem 'rubocop-rspec', '~> 2.8'
+
+gem 'pg', '~> 1.3'
 gem 'sqlite3', '~> 1.4'

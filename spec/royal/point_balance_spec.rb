@@ -53,7 +53,11 @@ RSpec.describe Royal::PointBalance do
   end
 
   describe '.apply_change_to_points' do
-    subject(:apply_change_to_points) { described_class.apply_change_to_points(user, amount) }
+    subject(:apply_change_to_points) do
+      described_class.transaction(requires_new: true) do
+        described_class.apply_change_to_points(user, amount)
+      end
+    end
 
     let(:user) { User.create!(username: 'Test') }
     let(:amount) { 100 }

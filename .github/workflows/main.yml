@@ -3,7 +3,8 @@ name: Ruby
 on: [push,pull_request]
 
 jobs:
-  Rubocop:
+  rubocop:
+    name: Rubocop
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -14,12 +15,14 @@ jobs:
           bundler-cache: true
       - name: Run Rubocop
         run: bin/rubocop
-  RSpec:
+
+  rspec-sqlite:
+    name: RSpec (SQLite3)
     runs-on: ubuntu-latest
     strategy:
       matrix:
         ruby-version: [2.6, 2.7, 3.0, 3.1]
-        locking-mode: [optimistic, pessimistic]
+        locking-mode: [optimistic, pessimistic, advisory]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Ruby ${{ matrix.ruby-version }}
@@ -29,5 +32,35 @@ jobs:
           bundler-cache: true
       - name: Run RSpec (${{ matrix.locking-mode }} locking)
         env:
-          ROYAL_LOCKING_MODE: ${{ matrix.locking-mode }}
+          TEST_LOCKING_MODE: ${{ matrix.locking-mode }}
+          TEST_DATABASE_ADAPTER: sqlite3
+        run: bin/rspec
+
+  rspec-postgresql:
+    name: RSpec (PostgreSQL)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: royal_test
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby ${{ matrix.ruby-version }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true
+      - name: Run RSpec (${{ matrix.locking-mode }} locking)
+        env:
+          PGHOST: localhost
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          TEST_LOCKING_MODE: ${{ matrix.locking-mode }}
+          TEST_DATABASE_ADAPTER: postgresql
         run: bin/rspec

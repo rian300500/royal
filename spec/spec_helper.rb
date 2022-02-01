@@ -6,7 +6,7 @@ require_relative 'support/database'
 require_relative 'support/user'
 
 Royal.configure do |config|
-  config.locking = ENV.fetch('ROYAL_LOCKING_MODE', :optimistic).to_sym
+  config.locking = ENV.fetch('TEST_LOCKING_MODE', :optimistic).to_sym
 end
 
 RSpec.configure do |config|
