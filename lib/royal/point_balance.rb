@@ -4,6 +4,8 @@ require 'active_record'
 
 module Royal
   class PointBalance < ActiveRecord::Base
+    attr_readonly :owner_id, :owner_type, :amount, :balance, :sequence
+
     belongs_to :owner, polymorphic: true, optional: false
     belongs_to :pointable, polymorphic: true, optional: true
 
@@ -11,7 +13,7 @@ module Royal
     validates :reason, length: { maximum: 1000 }
 
     before_create do
-      previous_balance = self.class.latest_balance_for_owner(owner)
+      previous_balance = self.class.latest_for_owner(owner)
 
       self.sequence = (previous_balance&.sequence || 0) + 1
       self.balance  = (previous_balance&.balance  || 0) + amount
@@ -25,7 +27,7 @@ module Royal
 
     # @param owner [ActiveRecord::Base]
     # @return [PointBalance, nil]
-    def self.latest_balance_for_owner(owner)
+    def self.latest_for_owner(owner)
       PointBalance.where(owner: owner).order(:sequence).last
     end
 
@@ -49,11 +51,6 @@ module Royal
     # @return [Integer]
     def original_balance
       balance - amount
-    end
-
-    # @return [Boolean]
-    def readonly?
-      super || persisted?
     end
   end
 end

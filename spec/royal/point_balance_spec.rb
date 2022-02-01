@@ -52,11 +52,6 @@ RSpec.describe Royal::PointBalance do
     expect(point_balance.balance).to eq(100)
   end
 
-  it 'is readonly once created' do
-    point_balance.save!
-    expect(point_balance).to be_readonly
-  end
-
   describe '.apply_change_to_points' do
     subject(:apply_change_to_points) { described_class.apply_change_to_points(user, amount) }
 
@@ -79,7 +74,7 @@ RSpec.describe Royal::PointBalance do
           ordered_values = Array.new(Royal.config.max_retries - 1) { nil }
 
           # Simulate conflicting writes N - 1 times before finally successfully getting the latest record.
-          allow(described_class).to receive(:latest_balance_for_owner).and_return(*ordered_values, latest_record)
+          allow(described_class).to receive(:latest_for_owner).and_return(*ordered_values, latest_record)
         end
 
         it 'creates a new point balance record' do
@@ -90,7 +85,7 @@ RSpec.describe Royal::PointBalance do
       context 'when it fails to acquire a lock after the maximum number of retries' do
         before(:each) do
           described_class.create!(owner: user, amount: 100)
-          allow(described_class).to receive(:latest_balance_for_owner).and_return(nil)
+          allow(described_class).to receive(:latest_for_owner).and_return(nil)
         end
 
         it 'raises a Royal::SequenceError' do

@@ -128,8 +128,7 @@ Since points are stored in a ledger, it's possible to view and display the compl
 </table>
 ```
 
-**NOTE:** For data integrity reasons, `Royal::PointBalance` records are as marked readonly once persisted to the database.
-Modifying or removing existing balance records is not supported.
+**NOTE:** For data integrity purposes, the `owner`, `amount`, `balance`, and `sequence` attributes on `Royal::PointBalance` records are as marked readonly once persisted to the database. Modifying the fields or removing existing balance records is not supported.
 
 ## Concurrency and Locking
 
