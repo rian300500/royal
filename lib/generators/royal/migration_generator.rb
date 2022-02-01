@@ -14,7 +14,7 @@ module Royal
         ::ActiveRecord::Generators::Base.next_migration_number(dir)
       end
 
-      def create_migration
+      def create_point_balances_migration
         migration_template 'create_point_balances.rb.erb', 'db/migrate/create_point_balances.rb'
       end
 

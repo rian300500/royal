@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateLedgerAccounts < ActiveRecord::Migration<%= migration_version %>
+class CreatePointBalances < ActiveRecord::Migration<%= migration_version %>
   def change
     create_table :point_balances do |t|
       t.belongs_to :owner, polymorphic: true, null: false
