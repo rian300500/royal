@@ -33,12 +33,28 @@ RSpec.describe Royal::Transaction do
       end
 
       it 'raises a Royal::InsufficientPointsError' do
-        expect { call }.to raise_error(Royal::InsufficientPointsRoyal)
+        expect { call }.to raise_error(Royal::InsufficientPointsError)
       end
 
       it 'does not change the balance of either user' do
-        expect { call rescue nil }.to change { user1.current_points }.by(0)
-          .and change { user2.current_points }.by(0)
+        expect { call rescue nil }.not_to change { Royal::PointBalance.count }
+      end
+    end
+
+    context 'when an owner has multiple operations in the transaction' do
+      before(:each) do
+        transaction.subtract_points(user2, 100)
+        transaction.add_points(user2, 100)
+      end
+
+      it 'performs the addition operations first' do
+        call
+        expect(user2.point_balances.map(&:amount)).to eq([100, 100, -100, -100])
+      end
+
+      it 'correctly calculates the final balance' do
+        call
+        expect(user2.current_points).to eq(0)
       end
     end
   end
