@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         ruby-version: [2.6, 2.7, 3.0, 3.1]
-        locking-mode: [optimistic, pessimistic, advisory]
+        locking-mode: [optimistic, pessimistic]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Ruby ${{ matrix.ruby-version }}
@@ -39,6 +39,10 @@ jobs:
   rspec-postgresql:
     name: RSpec (PostgreSQL)
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby-version: [2.6, 2.7, 3.0, 3.1]
+        locking-mode: [optimistic, pessimistic, advisory]
     services:
       postgres:
         image: postgres:13
