@@ -22,7 +22,7 @@ module Royal
     after_create if: -> { balance.negative? } do
       # Rollback the transaction _after_ the operation to ensure amount
       # was applied against the most recent points balance.
-      raise InsufficientPointsError.new(amount, original_balance, reason, pointable)
+      raise InsufficientPointsError.new(owner, amount, original_balance, reason, pointable)
     end
 
     # @param owner [ActiveRecord::Base]

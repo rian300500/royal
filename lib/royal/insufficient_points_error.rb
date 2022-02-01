@@ -2,6 +2,8 @@
 
 module Royal
   class InsufficientPointsError < Error
+    # @return [ActiveRecord::Base]
+    attr_reader :owner
     # @return [Integer]
     attr_reader :amount
     # @return [Integer]
@@ -11,11 +13,13 @@ module Royal
     # @return [ActiveRecord::Base, nil]
     attr_reader :pointable
 
+    # @param owner [ActiveRecord::Base]
     # @param amount [Integer]
     # @param balance [Integer]
     # @param reason [String, nil]
     # @param pointable [ActiveRecord::Base, nil]
-    def initialize(amount, balance, reason, pointable)
+    def initialize(owner, amount, balance, reason, pointable)
+      @owner     = owner
       @amount    = amount
       @balance   = balance
       @reason    = reason
