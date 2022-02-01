@@ -40,13 +40,13 @@ module Royal
       add_points(owner, -amount, reason: reason, pointable: pointable)
     end
 
-    # @return [Boolean]
+    # @return [self]
     def call
       PointBalance.transaction(requires_new: true) do
         @operations.sort_by(&:sorting_key).each(&:perform)
       end
 
-      true
+      self
     end
   end
 end

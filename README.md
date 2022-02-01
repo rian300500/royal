@@ -191,6 +191,50 @@ Unless your applicable has a very large number of `owner` records with overlappi
 
 However, if your application falls into situation #1 described above and also holds advisory locks for extended periods of time, balance updates may stall for much longer than expected as they'll be blocked until the lock is released.
 
+### Transactions and Deadlock Prevention
+
+When adding or subtracting points from a single record, Royal automatically handles locking and usually poses no risk of deadlock (as locks are only acquired for a single record).
+However, when changing the points balances of multiple records together, care must be taken to avoid conditions that would result in a stall or deadlock.
+
+To make this easier, Royal providers a `Transaction` object which can be used to define and safely execute a sequence on points balance changes on a number of objects all at once.
+In the example below, we transfer 100 points from one user to another:
+
+```ruby
+transaction = Royal::Transaction.new
+
+user1 = User.find(1)
+user2 = User.find(2)
+
+transaction.add_points(user1, 100)
+transaction.subtract_points(user2, 100)
+
+transaction.call
+```
+
+Transactions have no limit on how many records can be involved or how many operations can be performed on each record. For example, it's possible to have a single transaction both add and subtract points from the same `User` record.
+
+Royal will re-order the addition/subtraction operations in such a way that:
+* Records will be modified in a deterministic order, to avoid deadlocks
+* If a single record has both addition and subtraction operations, addition will be performed first
+
+Just like when adding or subtracting points from a single record, the transaction interface allows you to specify a `reason` or associated `pointable` record.
+
+```ruby
+trade = Trade.find(...) # Some hypothical trade record.
+
+transaction.add_points(user1, 100, reason: 'Trade from User 2', pointable: trade)
+transaction.subtract_points(user2, 100, reason: 'Trade to User 1', pointable: trade)
+```
+
+The transaction `add_points` and `subtract_points` methods also return the transaction object, so it's also possible to chain these method calls together if desired:
+
+```ruby
+transaction
+  .add_points(user1, 100)
+  .subtract_points(user2, 100)
+  .call
+```
+
 ## Future Functionality and Wishlist
 
  * [ ] Support multiple types of points per model
