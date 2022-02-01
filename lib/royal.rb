@@ -6,10 +6,11 @@ require_relative 'royal/error'
 require_relative 'royal/insufficient_points_error'
 require_relative 'royal/sequence_error'
 
+require_relative 'royal/config'
 require_relative 'royal/points'
 require_relative 'royal/point_balance'
 require_relative 'royal/locking'
-require_relative 'royal/config'
+require_relative 'royal/transaction'
 
 module Royal
   # @return [Royal::Config]
