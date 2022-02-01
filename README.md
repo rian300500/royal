@@ -220,7 +220,7 @@ Royal will re-order the addition/subtraction operations in such a way that:
 Just like when adding or subtracting points from a single record, the transaction interface allows you to specify a `reason` or associated `pointable` record.
 
 ```ruby
-trade = Trade.find(...) # Some hypothical trade record.
+trade = Trade.find(...) # Some hypothetical trade record.
 
 transaction.add_points(user1, 100, reason: 'Trade from User 2', pointable: trade)
 transaction.subtract_points(user2, 100, reason: 'Trade to User 1', pointable: trade)
