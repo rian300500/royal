@@ -2,7 +2,7 @@
 
 module Database
   CONFIG = {
-    'postgres' => {
+    'postgresql' => {
       'adapter' => 'postgresql',
       'database' => 'royal_test'
     },
@@ -24,7 +24,7 @@ module Database
     send("create_#{database_adapter}_database")
   end
 
-  def self.create_postgres_database
+  def self.create_postgresql_database
     require 'pg'
 
     conn = PG.connect(dbname: 'postgres')
