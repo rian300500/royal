@@ -8,12 +8,20 @@ RSpec.describe Royal::Points do
   describe '#current_points' do
     subject(:current_points) { user.current_points }
 
-    it "returns the user's loyalty points balance" do
+    it 'returns the points balance' do
       Royal::PointBalance.apply_change_to_points(user, 100)
       expect(current_points).to eq(100)
     end
 
-    it 'returns zero when the user has no points balance' do
+    it 'returns the latest balance when multiple records are present' do
+      5.times do
+        Royal::PointBalance.apply_change_to_points(user, 100)
+      end
+
+      expect(current_points).to eq(500)
+    end
+
+    it 'returns zero when there is no points balance' do
       expect(current_points).to be_zero
     end
   end
