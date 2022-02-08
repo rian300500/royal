@@ -19,7 +19,7 @@ module Royal
       self.balance  = (previous_balance&.balance  || 0) + amount
     end
 
-    after_create if: -> { balance.negative? } do
+    after_create if: -> { balance.negative? && !allow_negative_balance? } do
       # Rollback the transaction _after_ the operation to ensure amount
       # was applied against the most recent points balance.
       raise InsufficientPointsError.new(owner, amount, original_balance, reason, pointable)

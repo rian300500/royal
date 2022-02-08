@@ -61,6 +61,7 @@ module Database
       t.string     :reason, null: true
       t.integer    :amount, null: false
       t.integer    :balance, null: false
+      t.boolean    :allow_negative_balance, null: false, default: false
       t.integer    :sequence, null: false
       t.timestamps
 

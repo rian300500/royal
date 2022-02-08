@@ -38,20 +38,42 @@ RSpec.describe Royal::Points do
     end
 
     it 'returns the new points balance' do
-      expect(add_points).to eq(amount)
+      expect(add_points).to eq(100)
     end
 
     it 'creates a new point balance' do
       expect { add_points }.to change { user.point_balances.count }.by(1)
     end
+
+    context 'when supplied with a negative amount' do
+      let(:amount) { -100 }
+
+      before(:each) do
+        user.add_points(100)
+      end
+
+      it 'subtracts points from the user' do
+        expect { add_points }.to change { user.current_points }.by(amount)
+      end
+
+      it 'returns the new points balance' do
+        expect(add_points).to eq(0)
+      end
+
+      it 'raises an InsufficientPointsError if the resulting balance would be negative' do
+        user.add_points(-50)
+        expect { add_points }.to raise_error(Royal::InsufficientPointsError)
+      end
+    end
   end
 
   describe '#subtract_points' do
-    subject(:subtract_points) { user.subtract_points(amount, reason: reason, pointable: pointable) }
+    subject(:subtract_points) { user.subtract_points(amount, reason: reason, pointable: pointable, allow_negative_balance: allow_negative_balance) }
 
     let(:amount) { 100 }
     let(:reason) { 'Example reason' }
     let(:pointable) { nil }
+    let(:allow_negative_balance) { false }
 
     before(:each) do
       user.add_points(250)
@@ -84,6 +106,32 @@ RSpec.describe Royal::Points do
 
       it 'does not create a new point balance' do
         expect { subtract_points rescue nil }.not_to change { user.point_balances.count }
+      end
+    end
+
+    context 'when a negative balance is permitted' do
+      let(:allow_negative_balance) { true }
+
+      before(:each) do
+        user.subtract_points(200)
+      end
+
+      it 'spends points from the user' do
+        expect { subtract_points }.to change { user.current_points }.by(-amount)
+      end
+
+      it 'returns the new points balance' do
+        expect(subtract_points).to eq(-50)
+      end
+
+      it 'allows points to be subsequently added' do
+        subtract_points
+        expect(user.add_points(100)).to eq(50)
+      end
+
+      it 'does not allow points to be subsequently subtracted without a flag' do
+        subtract_points
+        expect { user.subtract_points(100) }.to raise_error(Royal::InsufficientPointsError)
       end
     end
   end
